@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager - Session Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .filter-btn {
+            margin: 5px 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Task Manager (Session Storage)</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter task...">
+    <button id="addBtn">Add Task</button>
+
+    <div>
+        <button class="filter-btn" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" onclick="setFilter('active')">Active</button>
+        <button class="filter-btn" onclick="setFilter('completed')">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <p id="stats"></p>
+</div>
+
+<script>
+////////////////////////////////////////////////////////////
+// TASK MANAGER USING sessionStorage
+////////////////////////////////////////////////////////////
+
+// Load tasks from sessionStorage
+let tasks = JSON.parse(sessionStorage.getItem('tasks')) || [];
+let currentFilter = 'all';
+
+// DOM Elements
+const taskInput = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+const taskList = document.getElementById('taskList');
+const stats = document.getElementById('stats');
+
+// Initialize app
+function init() {
+    renderTasks();
+    updateStats();
+}
+
+// Add task
+function addTask() {
+    const text = taskInput.value.trim();
+    if (text === '') {
+        alert('Please enter a task!');
+        return;
+    }
+
+    const task = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+        createdAt: new Date().toISOString()
+    };
+
+    tasks.push(task);
+    saveTasks();
+    taskInput.value = '';
+    renderTasks();
+    updateStats();
+}
+
+// Save to sessionStorage
+function saveTasks() {
+    sessionStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Render tasks
+function renderTasks() {
+    let filteredTasks = tasks;
+
+    if (currentFilter === 'active') {
+        filteredTasks = tasks.filter(task => !task.completed);
+    } 
+    else if (currentFilter === 'completed') {
+        filteredTasks = tasks.filter(task => task.completed);
+    }
+
+    taskList.innerHTML = '';
+
+    filteredTasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+
+        li.innerHTML = `
+            <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                   onchange="toggleTask(${task.id})">
+            <span class="${task.completed ? 'completed' : ''}">
+                ${task.text}
+            </span>
+            <button onclick="deleteTask(${task.id})">Delete</button>
+        `;
+
+        taskList.appendChild(li);
+    });
+}
+
+// Toggle task
+function toggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    task.completed = !task.completed;
+    saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager - Session Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .filter-btn {
+            margin: 5px 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Task Manager (Session Storage)</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter task...">
+    <button id="addBtn">Add Task</button>
+
+    <div>
+        <button class="filter-btn" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" onclick="setFilter('active')">Active</button>
+        <button class="filter-btn" onclick="setFilter('completed')">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <p id="stats"></p>
+</div>
+
+<script>
+////////////////////////////////////////////////////////////
+// TASK MANAGER USING sessionStorage
+////////////////////////////////////////////////////////////
+
+// Load tasks from sessionStorage
+let tasks = JSON.parse(sessionStorage.getItem('tasks')) || [];
+let currentFilter = 'all';
+
+// DOM Elements
+const taskInput = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+const taskList = document.getElementById('taskList');
+const stats = document.getElementById('stats');
+
+// Initialize app
+function init() {
+    renderTasks();
+    updateStats();
+}
+
+// Add task
+function addTask() {
+    const text = taskInput.value.trim();
+    if (text === '') {
+        alert('Please enter a task!');
+        return;
+    }
+
+    const task = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+        createdAt: new Date().toISOString()
+    };
+
+    tasks.push(task);
+    saveTasks();
+    taskInput.value = '';
+    renderTasks();
+    updateStats();
+}
+
+// Save to sessionStorage
+function saveTasks() {
+    sessionStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Render tasks
+function renderTasks() {
+    let filteredTasks = tasks;
+
+    if (currentFilter === 'active') {
+        filteredTasks = tasks.filter(task => !task.completed);
+    } 
+    else if (currentFilter === 'completed') {
+        filteredTasks = tasks.filter(task => task.completed);
+    }
+
+    taskList.innerHTML = '';
+
+    filteredTasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+
+        li.innerHTML = `
+            <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                   onchange="toggleTask(${task.id})">
+            <span class="${task.completed ? 'completed' : ''}">
+                ${task.text}
+            </span>
+            <button onclick="deleteTask(${task.id})">Delete</button>
+        `;
+
+        taskList.appendChild(li);
+    });
+}
+
+// Toggle task
+function toggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    task.completed = !task.completed;
+    saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+// Delete task
+function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+// Set filter
+function setFilter(filter) {
+    currentFilter = filter;
+    renderTasks();
+}
+
+// Update statistics
+function updateStats() {
+    const completed = tasks.filter(t => t.completed).length;
+    stats.textContent = `Total: ${tasks.length} | Completed: ${completed}`;
+}
+
+// Events
+addBtn.addEventListener('click', addTask);
+taskInput.addEventListener('keypress', e => {
+    if (e.key === 'Enter') addTask();
+});
+
+// Start app
+init();
+
+</script>
+</body>
+</html>
